@@ -10,7 +10,6 @@ Content-Type: application/json
     "profileImageUrl":"https://example.com.avatars.author.png"
 }
 
-
 ### User Login
 POST http://localhost:4000/common-api/login
 Content-Type: application/json
@@ -20,6 +19,22 @@ Content-Type: application/json
   "password": "User@12345"
  
 }
+
+### read all articles by user
+GET http://localhost:4000/user-api/articles
+
+### add comment to an article by user
+PUT http://localhost:4000/user-api/articles
+Content-Type: application/json
+
+{
+    "user":"69aedcfde1032a43f31faec0",
+    "articleId":"69aedd86e1032a43f31faecc",
+    "comment":"Good article."
+}
+
+
+
 
 
 
@@ -35,46 +50,29 @@ Content-Type: application/json
     "profileImageUrl":"https://example.com.avatars.author.png"
 }
 
-
-
-### Author Register
-POST http://localhost:4000/author-api/users
-Content-Type: application/json
-
-{
-  "firstName": "test",
-  "lastName": "Author",
-  "email": "test.author@example.com",
-  "password": "testauthor",
-  "profileImageUrl": "https://example.com/avatars/author.png"
-}
-
-
 ### Author Login
 POST http://localhost:4000/common-api/login
 Content-Type: application/json
 
 {
-    "email":"test.author@example.com",
-    "password":"testauthor"
+    "email":"varshith.author@example.com",
+    "password":"Author@12345"
 }
-
-
 
 ###  create articles (AUTHOR)
 POST http://localhost:4000/author-api/articles
 Content-Type: application/json
 
 {
-    "author":"698dfc8b90cb51bc33da8829",
-    "title":"test2 article",
-    "category":"database",
-    "content":"content of test 2 article"
+    "author":"69aedd3fe1032a43f31faec4",
+    "title":"Article 3",
+    "category":"SQL",
+    "content":"content of article 3"
 }
 
 
 ### Read articles of author
-GET http://localhost:4000/author-api/articles/698dfc8b90cb51bc33da8829
+GET http://localhost:4000/author-api/articles/69aedd3fe1032a43f31faec4
 
 
 ###  update articles
@@ -82,34 +80,24 @@ PUT http://localhost:4000/author-api/articles
 Content-Type: application/json
 
 {
-    "author":"698dfc8b90cb51bc33da8829",
-    "articleId":"698dfce290cb51bc33da8830",
-    "title":"test 2 article",
+    "author":"69aedd3fe1032a43f31faec4",
+    "articleId":"69aedd86e1032a43f31faecc",
+    "title":"Article 2",
     "category":"programming",
-    "content":"content of test 2 article updated"
+    "content":"content of article 2 updated"
 }
 
 ### delete an article
-PUT http://localhost:4000/author-api/articles/698dfce290cb51bc33da8830
-
-
-### read all articles
-GET http://localhost:4000/user-api/articles
-
-
-
-### add comment to an article
-POST http://localhost:4000/user-api/articles/698dfce290cb51bc33da8830/comments
+PATCH  http://localhost:4000/author-api/articles/69aedd50e1032a43f31faec7/status
 Content-Type: application/json
 
 {
-    "userId":"69896dbf9342acaad0d14923",
-    "comment":"This is a first comment on the article."
+    "isArticleActive":false
 }
 
 
-### Test res
-GET http://localhost:4000/test
+
+
 
 
 ### read all articles by admin
@@ -150,3 +138,6 @@ Content-Type: application/json
 ### logout
 POST  http://localhost:4000/common-api/logout
 
+
+### Test res
+GET http://localhost:4000/test

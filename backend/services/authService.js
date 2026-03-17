@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { UserTypeModel } from "../models/UserModel.js";
-import {config} from 'dotenv'
-config()
+import { config } from "dotenv";
+config();
 
 export const register = async (userObj) => {
   // create document
@@ -21,6 +21,7 @@ export const register = async (userObj) => {
   return newUserObj;
 };
 
+// authenticate function
 export const authenticate = async ({ email, password }) => {
   // check user with email & role
   const user = await UserTypeModel.findOne({ email });
@@ -38,10 +39,10 @@ export const authenticate = async ({ email, password }) => {
     throw err;
   }
   // check whether account blocked or not
-  if(user.isActive===false){
-    const err=new Error("Your account blocked, Plz contact admin")
-    err.status=403
-    throw err
+  if (user.isActive === false) {
+    const err = new Error("Your account blocked, Plz contact admin");
+    err.status = 403;
+    throw err;
   }
   // generate token
   const token = jwt.sign(
@@ -49,7 +50,7 @@ export const authenticate = async ({ email, password }) => {
     process.env.JWT_SECRET,
     { expiresIn: "1h" },
   );
-  const userObj=user.toObject()
-  delete userObj.password
-  return {token,user:userObj}
+  const userObj = user.toObject();
+  delete userObj.password;
+  return { token, user: userObj };
 };

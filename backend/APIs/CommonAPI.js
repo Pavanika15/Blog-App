@@ -31,34 +31,42 @@ commonRoute.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 });
 
+// change password(protected route)
 commonRoute.put("/change-password", async (req, res) => {
+  // get current password and new password
   const { email, currentPassword, newPassword } = req.body;
 
-  // Validate input
-  if (!email || !currentPassword || !newPassword) {
-    return res.status(400).json({ message: "All fields are required" });
+  // prevent same password
+  if(currentPassword===newPassword){
+    return res.status(400).json({message:"newPassword must be different from currentPassword"})
+  }
+  // // Validate input
+  // if (!email || !currentPassword || !newPassword) {
+  //   return res.status(400).json({ message: "All fields are required" });
+  // }
+
+  // Find user by email (works for USER, AUTHOR, ADMIN - all same collection)
+  const account = await UserTypeModel.findOne({ email });
+  if (!account) {
+    return res.status(404).json({ message: "Account not found" });
   }
 
-  // Authenticate current password
-  const user = await UserTypeModel.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
+  // Verify current password
   const isMatch = await bcrypt.compare(currentPassword, user.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Current password is incorrect" });
   }
 
-  // Hash new password
+  // Hash and save new password
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // Update password
-  await UserTypeModel.findOneAndUpdate(
-    { email },
-    { $set: { password: hashedPassword } },
-    { new: true },
-  );
+  // // Update password
+  // await UserTypeModel.findOneAndUpdate(
+  //   { email },
+  //   { $set: { password: hashedPassword } },
+  //   { new: true },
+  // );
 
+  await 
   res.status(200).json({ message: "Password changed successfully" });
 });
