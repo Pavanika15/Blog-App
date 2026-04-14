@@ -13,10 +13,12 @@ import {
   loadingClass,
   errorClass,
   timestampClass,
+  articleGrid,
 } from "../styles/common.js";
 
 function UserProfile() {
   const logout = useAuth((state) => state.logout);
+  const currentUser = useAuth((state) => state.currentUser);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -69,13 +71,17 @@ function UserProfile() {
     <div>
       {error && <p className={errorClass}>{error}</p>}
 
+      <div className="text-end">
+        <p className="text-2xl"> Welcome,{currentUser?.firstName}</p>
+        <img src={currentUser?.profileImageUrl} className="w-14 mr-2 rounded-full block ms-auto" alt="" />
+      </div>
       <div className="flex justify-end mb-6 mt-3">
-        <button className="bg-[#1d1d1f] text-white px-4 py-2 rounded-full text-sm hover:bg-black transition" onClick={onLogout}>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={onLogout}>
           Logout
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className={articleGrid}>
         {articles.map((articleObj) => (
           <div className={articleCardClass} key={articleObj._id}>
             <div className="flex flex-col h-full">

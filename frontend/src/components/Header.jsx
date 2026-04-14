@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router";
-import { useAuth } from "../store/authStore";
+import { useAuth } from "../store/authstore.js";
 import {
   navbarClass,
   navContainerClass,

@@ -1,72 +1,69 @@
 import exp from "express";
 import { authenticate } from "../services/authService.js";
-import bcrypt from "bcryptjs";
 import { UserTypeModel } from "../models/UserModel.js";
-export const commonRoute = exp.Router();
+import bcrypt from "bcryptjs";
+import { verifyToken } from "../middlewares/verifyToken.js";
+export const commonRouter = exp.Router();
 
 //login
-commonRoute.post("/login", async (req, res) => {
-  // get user credential object
+commonRouter.post("/login", async (req, res) => {
+  //get user cred object
   let userCred = req.body;
-  // call authenticate service
+  //call authenticate service
   let { token, user } = await authenticate(userCred);
-  // save token as httpOnly token
+  //save tokan as httpOnly cookie
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
     secure: false,
   });
-  // send res
+  //send res
   res.status(200).json({ message: "login success", payload: user });
 });
 
-// logout for User,Author and Admin
-commonRoute.post("/logout", (req, res) => {
-  // clear the cookie named 'token'
+//logout for User, Author and Admin
+commonRouter.get("/logout", (req, res) => {
+  // Clear the cookie named 'token'
   res.clearCookie("token", {
-    httpOnly: true, // Must match original set settings
-    secure: false,
-    sameSite: "lax",
+    httpOnly: true, // Must match original  settings
+    secure: false, // Must match original  settings
+    sameSite: "lax", // Must match original  settings
   });
+
   res.status(200).json({ message: "Logged out successfully" });
 });
 
-// change password(protected route)
-commonRoute.put("/change-password", async (req, res) => {
-  // get current password and new password
-  const { email, currentPassword, newPassword } = req.body;
-
-  // prevent same password
-  if(currentPassword===newPassword){
-    return res.status(400).json({message:"newPassword must be different from currentPassword"})
+//Change password(Protected route)
+commonRouter.put("/change-password", async (req, res) => {
+  //get current password and new password
+  const { role, email, currentPassword, newPassword } = req.body;
+  // Prevent same password
+  if (currentPassword === newPassword) {
+    return res.status(400).json({ message: "newPassword must be different from currentPassword" });
   }
-  // // Validate input
-  // if (!email || !currentPassword || !newPassword) {
-  //   return res.status(400).json({ message: "All fields are required" });
-  // }
 
-  // Find user by email (works for USER, AUTHOR, ADMIN - all same collection)
+  // Find user by email (works for USER, AUTHOR, ADMIN — all same collection)
   const account = await UserTypeModel.findOne({ email });
   if (!account) {
     return res.status(404).json({ message: "Account not found" });
   }
 
   // Verify current password
-  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  const isMatch = await bcrypt.compare(currentPassword, account.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Current password is incorrect" });
   }
-
   // Hash and save new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  account.password = await bcrypt.hash(newPassword, 10);
+  await account.save();
 
-  // // Update password
-  // await UserTypeModel.findOneAndUpdate(
-  //   { email },
-  //   { $set: { password: hashedPassword } },
-  //   { new: true },
-  // );
-
-  await 
   res.status(200).json({ message: "Password changed successfully" });
+});
+
+//Page refresh
+commonRouter.get("/check-auth", verifyToken("USER","AUTHOR","ADMIN"), (req, res) => {
+  res.status(200).json({
+    message: "authenticated",
+    payload: req.user
+  });
 });

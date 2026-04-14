@@ -15,7 +15,7 @@ import {
 import { NavLink } from "react-router";
 import { useAuth } from "../store/authStore";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate,useLocation } from "react-router";
 import { toast } from "react-hot-toast";
 
 function Login() {
@@ -25,6 +25,7 @@ function Login() {
   const currentUser = useAuth((state) => state.currentUser);
   const error = useAuth((state) => state.error);
   const navigate = useNavigate();
+  const location=useLocation()
 
   // console.log("Is Authenticated :", isAuthenticated);
   // console.log("Current usr", currentUser);
@@ -35,12 +36,13 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (currentUser.role === "USER") {
-        toast.success("Loggedin successfully");
-        navigate("/user-profile");
-      }
-      if (currentUser.role === "AUTHOR") {
-        navigate("/author-profile");
+      if (location.pathname === "/login") {
+        if (currentUser.role === "USER") {
+          toast.success("Loggedin successfully");
+          navigate("/user-profile");
+        } else if (currentUser.role === "AUTHOR") {
+          navigate("/author-profile");
+        }
       }
     }
   }, [isAuthenticated, currentUser]);

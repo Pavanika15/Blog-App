@@ -55,24 +55,28 @@ export const useAuth = create((set) => ({
   // restore login
   checkAuth: async () => {
     try {
+      set({ loading: true });
       const res = await axios.get("http://localhost:4000/common-api/check-auth", { withCredentials: true });
 
       set({
-        user: res.data.payload,
+        currentUser: res.data.payload,
         isAuthenticated: true,
+        loading: false,
       });
     } catch (err) {
       // If user is not logged in → do nothing
       if (err.response?.status === 401) {
         set({
-          user: null,
+          currentUser: null,
           isAuthenticated: false,
+          loading: false,
         });
         return;
       }
 
       // other errors
       console.error("Auth check failed:", err);
+      set({ loading: false });
     }
   },
 }));

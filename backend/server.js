@@ -4,7 +4,7 @@ import { config } from "dotenv";
 import { userRoute } from "./APIs/UserAPI.js";
 import { authorRoute } from "./APIs/AuthorAPI.js";
 import { adminRoute } from "./APIs/AdminAPI.js";
-import { commonRoute } from "./APIs/CommonAPI.js";
+import { commonRouter } from "./APIs/CommonAPI.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use("/user-api", userRoute);
 app.use("/author-api", authorRoute);
 app.use("/admin-api", adminRoute);
-app.use("/common-api", commonRoute);
+app.use("/common-api", commonRouter);
 
 // connect to db
 const connectDB = async () => {

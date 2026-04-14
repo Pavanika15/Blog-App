@@ -5,26 +5,23 @@ config();
 export const verifyToken = (...allowedRoles) => {
   return async (req, res, next) => {
     try {
-      // read token from req
-      const token = req.cookies.token; //{ token :""}
-      console.log("Token:", token);
+      // Read token from cookie
+      const token = req.cookies.token;
       if (!token) {
-        return res
-          .status(401)
-          .json({ message: "Unauthorized. please login" });
+        return res.status(401).json({ message: "Unauthorized. Please login" });
       }
-      // veriy the validity of the token(decoding the token)
-      let decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-      // check if role is allowed
+      // Verify and decode token
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Check if role is allowed
       if (!allowedRoles.includes(decodedToken.role)) {
-        return res.status(403).json({ message: "Forbidden. You don't have access" });
+        return res.status(403).json({ message: "Forbidden. You don't have permission" });
       }
 
       // Attach user info to req for use in routes
       req.user = decodedToken;
 
-      // forward req to next middleware/ route
       next();
     } catch (err) {
       // jwt.verify throws if token is invalid/expired
@@ -34,7 +31,7 @@ export const verifyToken = (...allowedRoles) => {
       if (err.name === "JsonWebTokenError") {
         return res.status(401).json({ message: "Invalid token. Please login again" });
       }
-      //next(err);
+     // next(err);
     }
   };
 };

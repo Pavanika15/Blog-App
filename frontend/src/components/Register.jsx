@@ -13,7 +13,7 @@ import {
   loadingClass,
 } from "../styles/common";
 import { NavLink } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
@@ -21,17 +21,30 @@ function Register() {
   const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
   //const []=useState()
 
   const onUserRegister = async (newUser) => {
     setLoading(true);
-    try {
-      let { role, ...userObj } = newUser;
 
+    // Create form data object
+    const formData = new FormData();
+    //get user object
+    let { role, profileImageUrl, ...userObj } = newUser;
+    console.log("role", role);
+    console.log("profileImageUrl", profileImageUrl);
+    //add all fields except profilePic to FormData object
+    Object.keys(userObj).forEach((key) => {
+      formData.append(key, userObj[key]);
+    });
+    // add profilePic to Formdata object
+    formData.append("profileImageUrl", profileImageUrl[0]);
+    //add image to formData objecte
+    try {
       if (role === "user") {
         //make API req to user-api
-        let resObj = await axios.post("http://localhost:4000/user-api/users", userObj);
+        let resObj = await axios.post("http://localhost:4000/user-api/users", formData);
         if (resObj.status === 201) {
           //navigate to login
           navigate("/login");
@@ -40,7 +53,7 @@ function Register() {
       if (role === "author") {
         //make API req to author-api
         //make API req to user-api
-        let resObj = await axios.post("http://localhost:4000/author-api/users", userObj);
+        let resObj = await axios.post("http://localhost:4000/author-api/users", formData);
         console.log("res obj is ", resObj);
         if (resObj.status === 201) {
           //navigate to login
@@ -48,12 +61,21 @@ function Register() {
         }
       }
     } catch (err) {
-     // console.log("err is ", err);
+      // console.log("err is ", err);
       setError(err.response?.data?.error || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
+
+  //cleanup(remove preview image from browser memory)
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   //loading
   if (loading === true) {
@@ -125,11 +147,36 @@ function Register() {
           <div className={formGroup}>
             <label className={labelClass}>Profile Image URL</label>
             <input
-              type="text"
+              type="file"
+              accept="image/png, image/jpeg"
               {...register("profileImageUrl")}
-              placeholder="https://example.com/avatar.png"
-              className={inputClass}
+              onChange={(e) => {
+                //get image file
+                const file = e.target.files[0];
+                // validation for image format
+                if (file) {
+                  if (!["image/jpeg", "image/png"].includes(file.type)) {
+                    setError("Only JPG or PNG allowed");
+                    return;
+                  }
+                  //validation for file size
+                  if (file.size > 2 * 1024 * 1024) {
+                    setError("File size must be less than 2MB");
+                    return;
+                  }
+                  //Converts file → temporary browser URL(create preview URL)
+                  const previewUrl = URL.createObjectURL(file);
+                  setPreview(previewUrl);
+                  setError(null);
+                }
+              }}
             />
+
+            {preview && (
+              <div className="mt-3 flex justify-center">
+                <img src={preview} alt="Preview" className="w-24 h-24 object-cover rounded-full border" />
+              </div>
+            )}
           </div>
 
           {/* Submit */}
@@ -152,6 +199,7 @@ function Register() {
 
 export default Register;
 
-
 //res.data
 //err.response.
+
+//append(fn,userObj.profileImageUrl)
