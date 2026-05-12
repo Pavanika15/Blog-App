@@ -1,4 +1,4 @@
-import { useAuth } from "../store/authStore";
+import { useAuth } from "../store/authStore.js";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import axios from "axios";

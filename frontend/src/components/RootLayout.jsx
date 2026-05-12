@@ -2,7 +2,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { Outlet } from "react-router";
 import { useEffect } from "react";
-import { useAuth } from "../store/authstore.js";
+import { useAuth } from "../store/authStore.js";
 
 function RootLayout() {
   const checkAuth = useAuth((state) => state.checkAuth);
