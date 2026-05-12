@@ -14,7 +14,7 @@ import {
   errorClass,
   loadingClass,
 } from "../styles/common";
-import { useAuth } from "../store/authStore.js";
+import { useAuth } from "../store/authStore";
 
 function WriteArticle() {
   const navigate = useNavigate();
@@ -32,10 +32,10 @@ function WriteArticle() {
     setLoading(true);
 
     //add authorId to articleObj
-    articleObj.author=currentUser._id;
+    articleObj.author = currentUser._id || currentUser.userId;
     try {
       await axios.post(
-        "https://blog-app-backend-qvt1.onrender.com//author-api/articles",
+        "http://localhost:4000/author-api/articles",
         articleObj,
         { withCredentials: true }
       );

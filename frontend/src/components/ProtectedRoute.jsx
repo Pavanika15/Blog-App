@@ -1,4 +1,4 @@
-import { useAuth } from "../store/authStore.js";
+import { useAuth } from "../store/authStore";
 import { Navigate } from "react-router";
 
 function ProtectedRoute({ children, allowedRoles }) {

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import axios from "axios";
-//import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 import {
   formCard,
@@ -12,6 +12,7 @@ import {
   inputClass,
   submitBtn,
   errorClass,
+  articlePageWrapper,
 } from "../styles/common";
 
 function EditArticle() {
@@ -40,7 +41,7 @@ function EditArticle() {
   const updateArticle = async (data) => {
     console.log(data);
     data.articleId = article._id;
-    let res = await axios.put("https://blog-app-backend-qvt1.onrender.com//author-api/articles", data, { withCredentials: true });
+    let res = await axios.put("http://localhost:4000/author-api/articles", data, { withCredentials: true });
     console.log("res update atricle", res);
     navigate(`/article/${article._id}`, {
       state: res.data.payload,

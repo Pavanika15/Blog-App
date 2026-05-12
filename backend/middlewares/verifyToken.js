@@ -31,7 +31,8 @@ export const verifyToken = (...allowedRoles) => {
       if (err.name === "JsonWebTokenError") {
         return res.status(401).json({ message: "Invalid token. Please login again" });
       }
-     // next(err);
+
+      return res.status(401).json({ message: "Unauthorized. Please login again" });
     }
   };
 };

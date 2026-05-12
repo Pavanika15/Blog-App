@@ -1,106 +1,63 @@
-import { useAuth } from "../store/authStore.js";
-import { useNavigate } from "react-router";
-import { toast } from "react-hot-toast";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useAuth } from "../store/authStore";
+import { Outlet, NavLink } from "react-router";
 
 import {
-  
-  articleCardClass,
-  articleTitle,
-  //articleBody,
-  ghostBtn,
-  loadingClass,
-  errorClass,
-  timestampClass,
-  articleGrid,
+  pageWrapper,
+  navLinkClass,
+  navLinkActiveClass,
+  divider,
 } from "../styles/common.js";
 
 function UserProfile() {
-  const logout = useAuth((state) => state.logout);
   const currentUser = useAuth((state) => state.currentUser);
-  const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
-    const getArticles = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get("https://blog-app-backend-qvt1.onrender.com//user-api/articles", { withCredentials: true });
-
-        setArticles(res.data.payload);
-      } catch (err) {
-        setError(err.response?.data?.error || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getArticles();
-  }, []);
-
-  // convert UTC → IST
-  const formatDateIST = (date) => {
-    return new Date(date).toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
-
-  const onLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
-    navigate("/login");
-  };
-
-  const navigateToArticleByID = (articleObj) => {
-    navigate(`/article/${articleObj._id}`, {
-      state: articleObj,
-    });
-  };
-
-  if (loading) {
-    return <p className={loadingClass}>Loading articles...</p>;
-  }
-
-  return (
-    <div>
-      {error && <p className={errorClass}>{error}</p>}
-
-      <div className="text-end">
-        <p className="text-2xl"> Welcome,{currentUser?.firstName}</p>
-        <img src={currentUser?.profileImageUrl} className="w-14 mr-2 rounded-full block ms-auto" alt="" />
-      </div>
-      <div className="flex justify-end mb-6 mt-3">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={onLogout}>
-          Logout
-        </button>
-      </div>
-
-      <div className={articleGrid}>
-        {articles.map((articleObj) => (
-          <div className={articleCardClass} key={articleObj._id}>
-            <div className="flex flex-col h-full">
-              {/* Top Content */}
-              <div>
-                <p className={articleTitle}>{articleObj.title}</p>
-
-                <p>{articleObj.content.slice(0, 20)}...</p>
-
-                <p className={timestampClass}>{formatDateIST(articleObj.createdAt)}</p>
-              </div>
-
-              {/* Button at bottom */}
-              <button className={`${ghostBtn} mt-auto pt-4`} onClick={() => navigateToArticleByID(articleObj)}>
-                Read Article →
-              </button>
+  // If user is an AUTHOR, show AuthorProfile equivalent
+  if (currentUser?.role === "AUTHOR") {
+    return (
+      <div className={pageWrapper}>
+        {/* User Header */}
+        <div className="text-start mb-6">
+          <div className="flex items-center gap-4">
+            <img src={currentUser?.profileImageUrl} className="w-20 rounded-full" alt={currentUser?.firstName} />
+            <div>
+              <h1 className="text-3xl font-bold">{currentUser?.firstName} {currentUser?.lastName || ""}</h1>
+              <p className="text-gray-600">{currentUser?.email}</p>
             </div>
           </div>
-        ))}
+        </div>
+
+      {/* Navigation */}
+        <div className="flex gap-6 mb-6">
+          <NavLink to="/user-profile" className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}>
+            Articles
+          </NavLink>
+
+          <NavLink to="/user-profile/write-article" className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}>
+            Write Article
+          </NavLink>
+        </div>
+
+        <div className={divider}></div>
+
+        {/* Nested route content */}
+        <Outlet />
+      </div>
+    );
+  }
+
+  // Regular USER profile - show only details
+  return (
+    <div className={pageWrapper}>
+      {/* User Details */}
+      <div className="text-start mb-8">
+        <div className="flex items-center gap-4">
+          <img src={currentUser?.profileImageUrl} className="w-20 rounded-full" alt={currentUser?.firstName} />
+          <div>
+            <h1 className="text-3xl font-bold">{currentUser?.firstName} {currentUser?.lastName || ""}</h1>
+            <p className="text-gray-600">{currentUser?.email}</p>
+            <p className="text-sm text-gray-500 mt-2">Role: User</p>
+          </div>
+        </div>
       </div>
     </div>
   );

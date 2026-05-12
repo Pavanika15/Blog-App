@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router";
-import { useAuth } from "../store/authStore.js";
+import { useAuth } from "../store/authStore";
 import {
   navbarClass,
   navContainerClass,
@@ -40,20 +40,14 @@ function Header() {
     <nav className={navbarClass}>
       <div className={navContainerClass}>
         {/* Logo */}
-        <NavLink to="/" className={`${navBrandClass} text-lg`}>
+        <NavLink to="/" className={navBrandClass}>
           MyBlog
         </NavLink>
 
         <ul className={navLinksClass}>
           {/* Always visible */}
           <li>
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                isActive ? navLinkActiveClass : navLinkClass
-              }
-            >
+            <NavLink to="/" end className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}>
               Home
             </NavLink>
           </li>
@@ -62,23 +56,13 @@ function Header() {
           {!isAuthenticated && (
             <>
               <li>
-                <NavLink
-                  to="/register"
-                  className={({ isActive }) =>
-                    isActive ? navLinkActiveClass : navLinkClass
-                  }
-                >
+                <NavLink to="/register" className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}>
                   Register
                 </NavLink>
               </li>
 
               <li>
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) =>
-                    isActive ? navLinkActiveClass : navLinkClass
-                  }
-                >
+                <NavLink to="/login" className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}>
                   Login
                 </NavLink>
               </li>
@@ -91,9 +75,7 @@ function Header() {
               <li>
                 <NavLink
                   to={getProfilePath()}
-                  className={({ isActive }) =>
-                    isActive ? navLinkActiveClass : navLinkClass
-                  }
+                  className={({ isActive }) => (isActive ? navLinkActiveClass : navLinkClass)}
                 >
                   Profile
                 </NavLink>

@@ -9,13 +9,13 @@ import {
   submitBtn,
   errorClass,
   mutedText,
-  //divider,
+  divider,
   linkClass,
 } from "../styles/common";
 import { NavLink } from "react-router";
-import { useAuth } from "../store/authStore.js";
-import { useEffect } from "react";
-import { useNavigate,useLocation } from "react-router";
+import { useAuth } from "../store/authStore";
+import { useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router";
 import { toast } from "react-hot-toast";
 
 function Login() {
@@ -25,27 +25,30 @@ function Login() {
   const currentUser = useAuth((state) => state.currentUser);
   const error = useAuth((state) => state.error);
   const navigate = useNavigate();
-  const location=useLocation()
+  const location = useLocation();
+  const toastShown = useRef(false);
+
 
   // console.log("Is Authenticated :", isAuthenticated);
   // console.log("Current usr", currentUser);
- // console.log("error is ", error);
+  // console.log("error is ", error);
   const onUserLogin = async (userCredObj) => {
     await login(userCredObj);
   };
 
+ 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (location.pathname === "/login") {
-        if (currentUser.role === "USER") {
-          toast.success("Loggedin successfully");
-          navigate("/user-profile");
-        } else if (currentUser.role === "AUTHOR") {
-          navigate("/author-profile");
-        }
+    if (isAuthenticated && location.pathname === "/login" && !toastShown.current) {
+      if (currentUser?.role === "USER") {
+        toast.success("Loggedin successfully");
+        toastShown.current = true;
+        navigate("/user-profile");
+      } else if (currentUser?.role === "AUTHOR") {
+        toastShown.current = true;
+        navigate("/author-profile");
       }
     }
-  }, [isAuthenticated, currentUser]);
+  }, [isAuthenticated, currentUser, location.pathname, navigate]);
 
   return (
     <div className={`${pageBackground} flex items-center justify-center py-16 px-4`}>

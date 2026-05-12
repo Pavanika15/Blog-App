@@ -2,52 +2,52 @@ import exp from "express";
 import { connect } from "mongoose";
 import { config } from "dotenv";
 import { userRoute } from "./APIs/UserAPI.js";
-import { authorRoute } from "./APIs/AuthorAPI.js";
-import { adminRoute } from "./APIs/AdminAPI.js";
-import { commonRouter } from "./APIs/CommonAPI.js";
 import cookieParser from "cookie-parser";
+import { adminRoute } from "./APIs/AdminAPI.js";
+import { authorRoute } from "./APIs/AuthorAPI.js";
+import { commonRouter } from "./APIs/CommonAPI.js";
 import cors from "cors";
 
-config(); // process.env gives all environmental variables
+config(); //process.env
+
+//Create express application
 const app = exp();
 //use cors middleware
-app.use(cors({ origin: ["http://localhost:5173"],credentials:true }));
-// add body parser middleware
+app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+//add body parser middleware
 app.use(exp.json());
-// add cookie parser middleware
+//add cookie parser middleware
 app.use(cookieParser());
 
-// connect APIs
+//connect APIs
 app.use("/user-api", userRoute);
 app.use("/author-api", authorRoute);
 app.use("/admin-api", adminRoute);
 app.use("/common-api", commonRouter);
 
-// connect to db
+//connect to db
 const connectDB = async () => {
   try {
     await connect(process.env.DB_URL);
     console.log("DB connection success");
-    // strat http server
-    app.listen(process.env.PORT, () =>
-      console.log(`server started on port ${process.env.PORT}`),
-    );
+
+    //start http server
+    app.listen(process.env.PORT, () => console.log(`server started on port ${process.env.PORT}`));
   } catch (err) {
-    console.log("Error in DB connection", err);
+    console.log("Err in DB connection", err);
   }
 };
 
 connectDB();
 
-// dealing with invalid path
+//dealing with invalid path
 app.use((req, res, next) => {
   console.log(req.url);
-  res.json({ message: `${req.url} is Invalid path` });
+  res.json({ message: `${req.url} is invalid path` });
 });
 
-// error handling middleware
+//error handling middleware
 app.use((err, req, res, next) => {
-
   console.log("Error name:", err.name);
   console.log("Error code:", err.code);
   console.log("Full error:", err);

@@ -21,6 +21,7 @@ function App() {
       element: <RootLayout />,
       errorElement:<ErrorBoundary />,
       children: [
+        ,
         {
           path: "",
           element: <Home />,
@@ -36,9 +37,19 @@ function App() {
         {
           path: "user-profile",
           element: 
-          <ProtectedRoute allowedRoles={["USER"]}>
+          <ProtectedRoute allowedRoles={["USER", "AUTHOR"]}>
             <UserProfile />
           </ProtectedRoute>,
+          children: [
+            {
+              index: true,
+              element: <AuthorArticles />,
+            },
+            {
+              path: "write-article",
+              element: <WriteArticle />,
+            },
+          ],
         },
         {
           path: "author-profile",

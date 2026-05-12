@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-// create comment schema
+//Create user comment schema
 const userCommentSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -11,7 +11,7 @@ const userCommentSchema = new Schema({
   },
 });
 
-// craete article schema
+//create article schema
 const articleSchema = new Schema(
   {
     author: {
@@ -38,10 +38,11 @@ const articleSchema = new Schema(
     },
   },
   {
-    timestamps:true,
-    strict:"throw",
-    versionKey:false
+    timestamps: true,
+    strict: "throw",
+    versionKey: false,
   },
 );
 
+//Create article model
 export const ArticleModel = model("article", articleSchema);

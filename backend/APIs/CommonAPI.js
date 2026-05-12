@@ -61,9 +61,18 @@ commonRouter.put("/change-password", async (req, res) => {
 });
 
 //Page refresh
-commonRouter.get("/check-auth", verifyToken("USER","AUTHOR","ADMIN"), (req, res) => {
-  res.status(200).json({
-    message: "authenticated",
-    payload: req.user
-  });
+commonRouter.get("/check-auth", verifyToken("USER","AUTHOR","ADMIN"), async (req, res, next) => {
+  try {
+    const account = await UserTypeModel.findById(req.user.userId).select("-password");
+    if (!account) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "authenticated",
+      payload: account,
+    });
+  } catch (err) {
+    next(err);
+  }
 });

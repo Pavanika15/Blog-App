@@ -44,15 +44,29 @@ authorRoute.post("/users", upload.single("profileImageUrl"), async (req, res, ne
 
 //Create article(protected route)
 authorRoute.post("/articles", verifyToken("AUTHOR"), async (req, res) => {
-  //get article from req
-  let article = req.body;
+  try {
+    // get article data
+    let article = req.body;
 
-  //create article document
-  let newArticleDoc = new ArticleModel(article);
-  //save
-  let createdArticleDoc = await newArticleDoc.save();
-  //send res
-  res.status(201).json({ message: "article created", payload: createdArticleDoc });
+    // attach logged in author
+    article.author = req.user.userId;
+
+    // create document
+    let newArticleDoc = new ArticleModel(article);
+
+    // save
+    let createdArticleDoc = await newArticleDoc.save();
+
+    // response
+    res.status(201).json({
+      message: "article created",
+      payload: createdArticleDoc,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 });
 
 //Read artiles of author(protected route)
@@ -122,6 +136,6 @@ authorRoute.patch("/articles/:id/status", verifyToken("AUTHOR"), async (req, res
   //send res
   res.status(200).json({
     message: `Article ${isArticleActive ? "restored" : "deleted"} successfully`,
-    payload: article, // use payload instead of article
+    payload: article, // ✅ use payload instead of article
   });
 });

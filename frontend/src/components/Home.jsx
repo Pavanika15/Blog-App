@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
 import {
   pageWrapper,
@@ -12,6 +13,7 @@ import {
   ghostBtn,
   loadingClass,
   errorClass,
+  submitBtn,
 } from "../styles/common";
 
 function Home() {
@@ -20,13 +22,17 @@ function Home() {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   useEffect(() => {
+    // Don't fetch if auth check is still loading or user not authenticated
+    if (authLoading || !isAuthenticated) return;
+
     const getArticles = async () => {
       setLoading(true);
 
       try {
-        const res = await axios.get("https://blog-app-backend-qvt1.onrender.com//user-api/articles", {
+        const res = await axios.get("http://localhost:4000/user-api/articles", {
           withCredentials: true,
         });
 
@@ -39,13 +45,41 @@ function Home() {
     };
 
     getArticles();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   const openArticle = (article) => {
     navigate(`/article/${article._id}`, {
       state: article,
     });
   };
+
+  if (authLoading) return <p className={loadingClass}>Loading...</p>;
+
+  if (!isAuthenticated) {
+    return (
+      <div className={pageWrapper}>
+        <div className="mb-16 text-center">
+          <h1 className="text-6xl font-bold text-[#1d1d1f] tracking-tight">
+            MyBlog
+          </h1>
+
+          <p className="text-[#6e6e73] mt-4 max-w-xl mx-auto text-lg">
+            Discover thoughtful articles on technology, programming, artificial
+            intelligence and modern web development.
+          </p>
+
+          <div className="mt-8">
+            <button
+              className={submitBtn}
+              onClick={() => navigate("/login")}
+            >
+              Sign In to Read Articles
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) return <p className={loadingClass}>Loading articles...</p>;
   if (error) return <p className={errorClass}>{error}</p>;

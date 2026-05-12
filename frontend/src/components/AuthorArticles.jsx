@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useAuth } from "../store/authStore.js";
+import { useAuth } from "../store/authStore";
 
 import {
   articleCardClass,
@@ -27,13 +27,14 @@ function AuthorArticles() {
   console.log("user in author profile",user)
   
   useEffect(() => {
-    if (!user?._id) return;
+    const authorId = user?._id || user?.userId;
+    if (!authorId) return;
 
     const getAuthorArticles = async () => {
       setLoading(true);
 
       try {
-        const res = await axios.get(`https://blog-app-backend-qvt1.onrender.com//author-api/articles/${user._id}`, { withCredentials: true });
+        const res = await axios.get(`http://localhost:4000/author-api/articles/${authorId}`, { withCredentials: true });
 
         setArticles(res.data.payload);
       } catch (err) {
@@ -45,7 +46,7 @@ function AuthorArticles() {
     };
 
     getAuthorArticles();
-  }, [user?._id]);
+  }, [user?.userId, user?._id]);
 
   const openArticle = (article) => {
     navigate(`/article/${article._id}`, {
