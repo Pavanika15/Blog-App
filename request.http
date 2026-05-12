@@ -1,5 +1,5 @@
 ### User register
-POST http://localhost:4000/user-api/users
+POST https://blog-app-backend-qvt1.onrender.com//user-api/users
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### User Login
-POST http://localhost:4000/common-api/login
+POST https://blog-app-backend-qvt1.onrender.com//common-api/login
 Content-Type: application/json
 
 {
@@ -21,10 +21,10 @@ Content-Type: application/json
 }
 
 ### read all articles by user
-GET http://localhost:4000/user-api/articles
+GET https://blog-app-backend-qvt1.onrender.com//user-api/articles
 
 ### add comment to an article by user
-PUT http://localhost:4000/user-api/articles
+PUT https://blog-app-backend-qvt1.onrender.com//user-api/articles
 Content-Type: application/json
 
 {
@@ -39,7 +39,7 @@ Content-Type: application/json
 
 
 ### Author register
-POST http://localhost:4000/author-api/users
+POST https://blog-app-backend-qvt1.onrender.com//author-api/users
 Content-Type: application/json
 
 {
@@ -51,7 +51,7 @@ Content-Type: application/json
 }
 
 ### Author Login
-POST http://localhost:4000/common-api/login
+POST https://blog-app-backend-qvt1.onrender.com//common-api/login
 Content-Type: application/json
 
 {
@@ -60,7 +60,7 @@ Content-Type: application/json
 }
 
 ###  create articles (AUTHOR)
-POST http://localhost:4000/author-api/articles
+POST https://blog-app-backend-qvt1.onrender.com//author-api/articles
 Content-Type: application/json
 
 {
@@ -72,11 +72,11 @@ Content-Type: application/json
 
 
 ### Read articles of author
-GET http://localhost:4000/author-api/articles/69aedd3fe1032a43f31faec4
+GET https://blog-app-backend-qvt1.onrender.com//author-api/articles/69aedd3fe1032a43f31faec4
 
 
 ###  update articles
-PUT http://localhost:4000/author-api/articles
+PUT https://blog-app-backend-qvt1.onrender.com//author-api/articles
 Content-Type: application/json
 
 {
@@ -88,7 +88,7 @@ Content-Type: application/json
 }
 
 ### delete an article
-PATCH  http://localhost:4000/author-api/articles/69aedd50e1032a43f31faec7/status
+PATCH  https://blog-app-backend-qvt1.onrender.com//author-api/articles/69aedd50e1032a43f31faec7/status
 Content-Type: application/json
 
 {
@@ -101,11 +101,11 @@ Content-Type: application/json
 
 
 ### read all articles by admin
-GET http://localhost:4000/admin-api/articles
+GET https://blog-app-backend-qvt1.onrender.com//admin-api/articles
 
 
 ### block user roles
-POST http://localhost:4000/admin-api/block-user
+POST https://blog-app-backend-qvt1.onrender.com//admin-api/block-user
 Content-Type: application/json
 
 {
@@ -114,7 +114,7 @@ Content-Type: application/json
 }
 
 ### unblock user roles
-POST http://localhost:4000/admin-api/unblock-user
+POST https://blog-app-backend-qvt1.onrender.com//admin-api/unblock-user
 Content-Type: application/json
 
 {
@@ -124,7 +124,7 @@ Content-Type: application/json
 
 
 ### change password
-PUT http://localhost:4000/common-api/change-password
+PUT https://blog-app-backend-qvt1.onrender.com//common-api/change-password
 Content-Type: application/json
 
 {
@@ -136,8 +136,8 @@ Content-Type: application/json
 
 
 ### logout
-POST  http://localhost:4000/common-api/logout
+POST  https://blog-app-backend-qvt1.onrender.com//common-api/logout
 
 
 ### Test res
-GET http://localhost:4000/test
+GET https://blog-app-backend-qvt1.onrender.com//test

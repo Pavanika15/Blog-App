@@ -26,7 +26,7 @@ function Home() {
       setLoading(true);
 
       try {
-        const res = await axios.get("http://localhost:4000/user-api/articles", {
+        const res = await axios.get("https://blog-app-backend-qvt1.onrender.com//user-api/articles", {
           withCredentials: true,
         });
 
