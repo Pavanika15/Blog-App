@@ -13,7 +13,18 @@ config(); //process.env
 //Create express application
 const app = exp();
 //use cors middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://blog-app-sepia-eight-46.vercel.app"
+  ],
+  credentials: true
+}));
+
+app.get("/", (req, res) => {
+  res.send("Backend is working");
+});
+
 //add body parser middleware
 app.use(exp.json());
 //add cookie parser middleware

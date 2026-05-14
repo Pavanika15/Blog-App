@@ -64,19 +64,13 @@ export const useAuth = create((set) => ({
         loading: false,
       });
     } catch (err) {
-      // If user is not logged in → do nothing
-      if (err.response?.status === 401) {
-        set({
-          currentUser: null,
-          isAuthenticated: false,
-          loading: false,
-        });
-        return;
-      }
+  console.log("Auth error:", err);
 
-      // other errors
-      console.error("Auth check failed:", err);
-      set({ loading: false });
-    }
+  set({
+    currentUser: null,
+    isAuthenticated: false,
+    loading: false,
+  });
+}
   },
 }));
